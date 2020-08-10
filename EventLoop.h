@@ -6,8 +6,12 @@
 #include <memory>
 #include <mutex>
 #include <condition_variable>
+#include <stdint.h>
 #include "Channel.h"
 #include "Epoller.h"
+#include "Callback.h"
+#include "Timestamp.h"
+#include "TimerId.h"
 
 namespace network
 {
@@ -23,6 +27,13 @@ namespace network
 		void Quit();
 		bool IsInLoopThread()const {return m_pid == std::this_thread::get_id();}
 		void DoPendingFunc();
+	
+		void RunInLoop(const Func& func);
+		void QueueInLoop(const Func& func);
+
+		TimerId RunAt(Timestamp& when, TimerCallback& cb);
+		TimerId RunAfter(int64_t delay, const TimerCallback& cb);
+		TimerId RunEvery(int64_t interval, const TimerCallback& cb);
 	private:
 		bool CreateWakeUpFd();
 		bool WakeUp();
@@ -42,7 +53,12 @@ namespace network
 		std::vector<Func> 		m_peding_func;	
 		
 		Channel* 			m_cur_active_channel;
+
+		std::unique_ptr<TimerQueue>	m_timer_queue;
 		
+		std::mutex			m_mutex;
+		bool				m_calling_pending_func;
+
 }
 
 #endif

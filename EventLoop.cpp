@@ -8,7 +8,7 @@ EventLoop::EventLoop()
 ,m_quit(false)
 ,m_tid(std::this_thread::get_id())
 ,m_cur_active_channel(NULL)
-
+,m_timer_queue(new TimerQueue(this))
 {
 	m_epoller.reset(new Epoller(this));
 	CreateWakeUpFd();
@@ -21,8 +21,14 @@ EventLoop::EventLoop()
 EventLoop::Loop()
 {
 	assert(IsInLoopThread);
+
+
 	while(!m_quit)
 	{
+		m_timer_queue->DoTimer();
+
+		m_cur_active_channel.clear();
+
 		m_epoller->Poll(1, m_channel_vec);
 		for(const auto& it : m_channel_vec)
 		{
@@ -53,6 +59,31 @@ void EventLoop::DoPendingFunc()
 	m_calling_pending_func = false;
 }
 
+void EventLoop::RunInLoop(Func& func)
+{
+	if(IsInLoopThread())
+	{
+		func();
+	}
+	else
+	{
+		QueueInLoop(func);
+	}
+}
+
+void EventLoop::QueueInLoop(Func& func)
+{
+	{
+		std::unique_lock<std::mutex> lock(m_mutex);
+		m_peding_func.push_back(func);
+	}
+
+	if(!IsInLoopThread() || m_calling_pending_func)
+	{
+		WakeUp();
+	}
+}
+
 void EventLoop::Quit()
 {
 	m_quit = true;
@@ -60,6 +91,23 @@ void EventLoop::Quit()
 	{
 		WakeUp();
 	}
+}
+
+TimerId EventLoop::RunAt(const Timestamp& when, const TimerCallback& cb)
+{
+	return m_timer_queue->AddTimer(cb, when, 0, 1);	
+}
+
+TimerId EventLoop::RunAfter(int64_t delay, const TimerCallback& cb)
+{
+	Timestamp time(AddTimer(Timestamp::now(), delay));
+	return RunAt(tim, cb);
+}
+
+TimerId EventLoop::RunEvery(int64_t interval, const TimerCallback& cb)
+{
+	Timestamp time(AddTimer(Timestamp::now(), interval);
+	return m_timer_queue->AddTimer(cb, time, interval, -1);	
 }
 
 bool EventLoop::CreateWakeUpFd()

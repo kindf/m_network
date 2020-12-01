@@ -27,13 +27,13 @@ namespace network
 		int GetFd()const{return m_fd;};
 
 	private:
-		EventCallBack read_callback;
-		EventCallBack write_callback;
-		EventCallBack error_callback;	
-		int m_fd;
-		EventLoop m_loop;
-		int m_events;
-		int m_revents;
+		EventCallBack 			m_read_callback;
+		EventCallBack 			m_write_callback;
+		EventCallBack 			m_error_callback;	
+		int 					m_fd;
+		EventLoop* 				m_loop;
+		int 					m_events;
+		int 					m_revents;
 	}
 }
 

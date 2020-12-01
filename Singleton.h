@@ -1,4 +1,4 @@
-#ifndef
+#ifndef __SINGLETON__H
 #define __SINGLETON__H
 
 template <typename T>

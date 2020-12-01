@@ -14,6 +14,8 @@ namespace network
 	typedef std::function<void(const TcpConnection&)> CloseCallback;
 	typedef std::function<void(const TcpConnection&)> WriteCompleteCallback;
 
+    typedef std::function<void(const TcpConnectionPtr&)> MessageCallback;
+
 }
 
 #endif

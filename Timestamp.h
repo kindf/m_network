@@ -6,95 +6,98 @@
 #include <string>
 using namaspace std;
 
-class Timestamp
+namespace network
 {
-public:
-	Timestamp():m_micro_seconds(0){}
-
-	explicit Timestamp(int64_t micro_seconds);
-	
-	Timestamp& operator +=(Timestamp lhs)
+	class Timestamp
 	{
-		this->m_micro_seconds += lhs.m_micro_seconds;
-		return *this;	
-	}				 
+	public:
+		Timestamp():m_micro_seconds(0){}
 
-	Timestamp& operator +=(int64_t lhs)
+		explicit Timestamp(int64_t micro_seconds);
+		
+		Timestamp& operator +=(Timestamp lhs)
+		{
+			this->m_micro_seconds += lhs.m_micro_seconds;
+			return *this;	
+		}				 
+
+		Timestamp& operator +=(int64_t lhs)
+		{
+			this->m_micro_seconds += lhs;
+			return *this;
+		}
+
+		Timestamp& operator -=(Timestamp lhs)
+		{
+			this->m_micro_seconds -= lhs.m_micro_seconds;
+			return *this;
+		}
+
+		Timestamp& operator -=(int64_t lhs)
+		{
+			this->m_micro_seconds -= lhs;
+			return *this;
+		}
+
+		bool Valid() const {return m_micro_seconds > 0;}
+
+		void swap(Timestamp& that)
+		{
+			std::swap(m_micro_seconds, that.m_micro_seconds);
+
+		}
+		
+		int64_t GetMicroSeconds() const{return m_micro_seconds;}
+
+		static Timestamp now();
+		static Timestamp Invalid();
+
+	private:
+		// static const int MICROSECONDSPERSECOND = 1000*1000;
+		
+		int64_t m_micro_seconds;
+	};
+
+	inline bool operator <(const Timestamp& lhs, const Timestamp& rhs)
 	{
-		this->m_micro_seconds += lhs;
-		return *this;
+		return lhs.GetMicroSeconds() < rhs.GetMicroSeconds();
 	}
 
-	Timestamp& operator -=(Timestamp lhs)
+	inline bool operator >(Timestamp lhs, Timestamp rhs)
 	{
-		this->m_micro_seconds -= lhs.m_micro_seconds;
-		return *this;
+		return rhs < lhs;
 	}
 
-	Timestamp& operator -=(int64_t lhs)
+	inline bool operator <=(Timestamp lhs, Timestamp rhs)
 	{
-		this->m_micro_seconds -= lhs;
-		return *this;
+		return !(lhs > rhs);
 	}
 
-	bool Valid() const {return m_micro_seconds > 0;}
-
-	void swap(Timestamp& that)
+	inline bool operator >=(Timestamp lhs, Timestamp rhs)
 	{
-		std::swap(m_micro_seconds, that.m_micro_seconds);
-
+		return !(lhs < rhs):
 	}
-	
-	int64_t GetMicroSeconds() const{return m_micro_seconds;}
 
-	static Timestamp now();
-	static Timestamp Invalid();
+	inline bool operator ==(Timestamp lhs, Timestamp rhs)
+	{
+		return lhs.GetMicroSeconds() == rhs.GetMicroSeconds();
+	}
 
-private:
-	static const int MICROSECONDSPERSECOND = 1000*1000;
-	
-	int64_t m_micro_seconds;
-};
+	inline bool operator !=(Timestamp lhs, Timestamp rhs)
+	{
+		return !(lhs == rhs);
+	}
 
-inline bool operator <(const Timestamp& lhs, const Timestamp& rhs)
-{
-	return lhs.GetMicroSeconds() < rhs.GetMicroSeconds();
-}
+	// inline double TimeDefference(Timestamp high, Timestamp low)
+	// {
+	// 	int64_t diff = high.GetMicroSeconds() - low.GetMicroSeconds();
+	// 	return static_cast<double>(diff)/Timestamp::MICROSECONDSPERSECOND;
+	// }
 
-inline bool operator >(Timestamp lhs, Timestamp rhs)
-{
-	return rhs < lhs;
-}
-
-inline bool operator <=(Timestamp lhs, Timestamp rhs)
-{
-	return !(lhs > rhs);
-}
-
-inline bool operator >=(Timestamp lhs, Timestamp rhs)
-{
-	return !(lhs < rhs):
-}
-
-inline bool operator ==(Timestamp lhs, Timestamp rhs)
-{
-	return lhs.GetMicroSeconds() == rhs.GetMicroSeconds();
-}
-
-inline bool operator !=(Timestamp lhs, Timestamp rhs)
-{
-	return !(lhs == rhs);
-}
-
-inline double TimeDefference(Timestamp high, Timestamp low)
-{
-	int64_t diff = high.GetMicroSeconds() - low.GetMicroSeconds();
-	return static_cast<double>(diff)/Timestamp::MICROSECONDSPERSECOND;
-}
-
-inline Timestamp AddTime(Timestamp timestamp, int64_t microseconds)
-{
-	return Timestamp(timestamp.GetMicroSeconds() + microseconds);
+	inline Timestamp AddTime(Timestamp timestamp, int64_t microseconds)
+	{
+		return Timestamp(timestamp.GetMicroSeconds() + microseconds);
+	}
 }
 
 #endif

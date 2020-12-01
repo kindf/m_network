@@ -17,6 +17,12 @@ namespace network
 		TcpConnection(EventLoop loop, int fd);
 		~TcpConnection();
 
+		static const int MAX_INPUT_BUFFER_SIZE = 65535;
+		static const int MAX_OUTPUT_BUFFER_SIZE = 65535;
+
+	public:
+		void HandleRead();
+
 	private:
 		TcpConnection(const TcpConnection&);
 		TcpConnection& operator =(const TcpConnection&);
@@ -26,6 +32,7 @@ namespace network
 		ConnectionCallback			m_connection_callback;
 		CloseCallback				m_close_callback;
 		WriteCompleteCallback		m_write_callback;
+		MessageCallback				m_message_callback;
 
 
 		EventLoop*					m_loop;

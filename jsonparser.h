@@ -62,9 +62,6 @@ public:
 	bool ArrayPushBackObjAndDown();
 	bool ArrayPushBackArrayAndDown();
 
-	bool ArrayPushBackMsgSquads(MsgSquads *msg_squads);
-	bool ArrayGetMsgSquads(int key_index, MsgSquads &msg_squads);
-
 	bool SaveInFile(const char *filename);
 
 	const char *ToJsonString();

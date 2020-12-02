@@ -25,4 +25,9 @@ namespace network
 		m_addr.sin_port = htons(port);
 		inet_pton(AF_INET, ip.c_str(), &m_addr.sin_addr);
 	}	
+
+	void InetAddress::SetSockAddrInet(struct sockaddr_in addr)
+	{
+		m_addr = addr;
+	}
 }

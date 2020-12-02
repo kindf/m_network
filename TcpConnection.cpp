@@ -14,7 +14,7 @@ namespace network
 
     void TcpConnection::HandleRead()
     {
-        m_loop.
+        m_loop->AssertInLoopThread();
         int n = OnReadFd();
 
         if(n > 0)

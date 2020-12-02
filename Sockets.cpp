@@ -31,9 +31,16 @@ namespace network
 		assert(ret >= 0);
 	}	
 
-	void Sockets::AcceptSock()
+	int Sockets::AcceptSock(InetAddress& peer_addr)
 	{
-
+		struct sockaddr_in addr;
+    	memset(&addr, 0, sizeof addr);
+		int connfd = Accept(m_sockfd, &addr);
+		if (connfd >= 0)
+		{
+			peer_addr->SetSockAddrInet(addr);
+		}
+		return connfd;
 	}
 
 	int Sockets::CreateSocketOrDie()
@@ -43,10 +50,18 @@ namespace network
 		return sockfd;
 	}
 
-	int Sockets::Accpet(int fd, struct sockaddr_in* addr)
+	int Sockets::Accept(int fd, struct sockaddr_in* addr)
 	{
 		int connfd = ::accept(sockfd_, addr, static_cast<socklen_t>(sizeof(*addr));
 		return connfd;
+	}
+
+	void Sockets::Close(int fd)
+	{
+		if (::close(fd) < 0)
+		{
+			std::cout<<"Sockets::Close() error! fd="<<fd<<std::endl;
+		}
 	}
 }
 

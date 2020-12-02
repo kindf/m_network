@@ -2,6 +2,7 @@
 #include "Channel.h"
 #include "EventLoop.h"
 #include "InetAddress.h"
+#include <iostream>
 
 namespace network
 {
@@ -28,10 +29,22 @@ namespace network
     {
         m_loop->AssertInLoopThread();
         InetAddress peer_addr;
-        int conn_fd = m_accept_sock.AcceptSoct();
+        int conn_fd = m_accept_sock.AcceptSoct(peer_addr);
         if(conn_fd >= 0)
         {
-
+            if (m_new_connection_callback)
+            {
+                m_new_connection_callback(connfd, peerAddr);
+            }
+            else
+            {
+                Sockets::Close(connfd);
+            }
         }
+        else
+        {
+            std::count<<"Acceptor::HandleRead() "<<"accept error"<<std::endl;
+        }
+        
     }
 } 

@@ -3,11 +3,13 @@
 
 namespace network
 {
+	class InetAddress;
+
 	class Socket
 	{
 	public:
-		explicit Socket(int sockfd):m_sockfd(sockfd){}
-		~Socket();
+		explicit Sockets(int sockfd):m_sockfd(sockfd){}
+		~Sockets();
 
 	public:
 		static int CreateSocketOrDie();
@@ -15,13 +17,12 @@ namespace network
 		void BindOrDie(const InetAddress* addr);
 		void BindOrDie(const char* ip, short port);
 		void ListenOrDie();
-		int AcceptSock(struct sockaddr_in* addr);
-
+		int AcceptSock(InetAddress& peer_addr);
+		static void Close(int fd);
 	public:
-		static void Accpet(int fd, struct sockaddr_in* addr);
+		static int Accept(int fd, struct sockaddr_in* addr);
 	private:
 		int m_sockfd;
-
 	}
 }
 

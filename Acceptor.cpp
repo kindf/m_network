@@ -6,7 +6,7 @@
 
 namespace network
 {
-    Acceptor::Acceptor(EventLoop* loop, const InetAddress* listent_addr, )
+    Acceptor::Acceptor(EventLoop* loop, const InetAddress* listent_addr)
         : m_loop(loop)
         , m_accept_sock(Sockets::CreateSocketOrDie())
         , m_accept_channel(loop, m_accept_sock.GetFd())

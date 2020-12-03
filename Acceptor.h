@@ -15,7 +15,7 @@ namespace network
         typedef std::function<void(int sockfd, const InetAddress&)> NewConnectionCallback;
 
     public:
-        Acceptor(EventLoop* loop);
+        Acceptor(EventLoop* loop, const InetAddress* listent_addr);
         ~Acceptor();
 
         void Listen();

@@ -18,8 +18,8 @@ namespace network
     public:
         EventLoopThreadPool(EventLoop* loop);
         ~EventLoopThreadPool();
-        void Init();
-        void Start();
+        void Init(int threads_num, EventLoop* loop);
+        void Start(const ThreadInitCallback& cb);
         void Stop();
         EventLoop* GetNextLoop();
     private:

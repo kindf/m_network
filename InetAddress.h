@@ -17,6 +17,7 @@ namespace network
 		InetAddress(const struct sockaddr_in& addr):m_addr(addr){}
 		const struct sockaddr_in& GetInetAddr() const {return m_addr;}
 		void SetSockAddrInet(struct sockaddr_in addr);
+		const string ToIpPort();
 	private:
 		struct sockaddr_in m_addr;
 	}

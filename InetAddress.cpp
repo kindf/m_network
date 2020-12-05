@@ -30,4 +30,9 @@ namespace network
 	{
 		m_addr = addr;
 	}
+
+	const string InetAddress::ToIpPort()
+	{
+		
+	}
 }

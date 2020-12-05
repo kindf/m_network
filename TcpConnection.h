@@ -14,7 +14,7 @@ namespace network
 	class TcpConnection:public std::enable_shared_from_this<TcpConnection>
 	{
 	public:
-		TcpConnection(EventLoop loop, int fd);
+		TcpConnection(EventLoop loop, int fd, string name);
 		~TcpConnection();
 
 		static const int MAX_INPUT_BUFFER_SIZE = 65535;
@@ -22,13 +22,15 @@ namespace network
 
 	public:
 		void HandleRead();
-
+		void ConnectEstablished();
+		void ConnectDestroyed();
+		string& GetName()const{return m_name;};
 	private:
 		TcpConnection(const TcpConnection&);
-		TcpConnection& operator =(const TcpConnection&);
-
+		TcpConnection& operator= (const TcpConnection&);
 
 	private:
+		const string				m_name;
 		ConnectionCallback			m_connection_callback;
 		CloseCallback				m_close_callback;
 		WriteCompleteCallback		m_write_callback;

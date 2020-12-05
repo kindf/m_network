@@ -3,11 +3,12 @@
 
 namespace network
 {
-    TcpConnection::TcpConnection(EventLoop* loop, int fd)
+    TcpConnection::TcpConnection(EventLoop* loop, int fd, string name)
     : m_loop = loop
     , m_channel_ptr(new Channel(loop, fd))
     , m_input_buff()
     , m_output_buff()
+    , m_name(name)
     {
         
     }
@@ -62,4 +63,13 @@ namespace network
         return n;
     }
 
+    void TcpConnection::ConnectEstablished()
+    {
+
+    }
+
+    void TcpConnection::ConnectDestroyed()
+    {
+
+    }
 }

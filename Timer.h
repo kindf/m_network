@@ -11,13 +11,13 @@ namespace network
 	class Timer
 	{
 	public:
-		Timer(const TimerCallback& callback, Timestamp when, int64_t intercal, int64_t repeat_count = -1);
+		Timer(const TimerCallback& callback, Timestamp when, int64_t interval, int64_t repeat_count = -1);
 	
 	void run();
 	
 	bool IsCanceled() const
 	{
-		return m_canceled
+		return m_canceled;
 	}
 
 	void Cancel(bool off)
@@ -40,10 +40,10 @@ namespace network
 		int64_t 					m_interval;
 		int64_t 					m_repeat_count;
 		bool 						m_canceled;
-		const int64_t				m_sequence;
+		int64_t						m_sequence;
 		
 		static std::atomic<int64_t> m_created_num;
-	}
+	};
 
 
 }

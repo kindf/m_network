@@ -10,7 +10,9 @@ namespace network
 	, m_interval(interval)
 	, m_repeat_count(repeat_count)
 	, m_canceled(false)
-	{}
+	{
+		
+	}
 
 	void Timer::run()
 	{

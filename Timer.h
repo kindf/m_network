@@ -35,12 +35,12 @@ namespace network
 		Timer(const Timer&) = delete;
 		Timer operator =(const Timer&) = delete;
 	private:
-		const TimerCallback 	m_callback;
-		Timestamp		m_expiration;
-		int64_t 		m_interval;
-		int64_t 		m_repeat_count;
-		bool 			m_canceled;
-		const int64_t		m_sequence;
+		const TimerCallback 		m_callback;
+		Timestamp					m_expiration;
+		int64_t 					m_interval;
+		int64_t 					m_repeat_count;
+		bool 						m_canceled;
+		const int64_t				m_sequence;
 		
 		static std::atomic<int64_t> m_created_num;
 	}

@@ -40,10 +40,10 @@ namespace network
 		void Insert(Timer* timer);
 	
 	private:
-		typedef std::pair<Timestamp, Timer*> 	Entry;
-		typedef std::set<Entry>			TimerList;
-		typedef std::pair<Timer*, int64_t>	ActiveTimer;
-		typedef std::set<ActiveTimer>		ActiveTimerSet;	
+		typedef std::pair<Timestamp, Timer*> 		Entry;
+		typedef std::set<Entry>						TimerList;
+		typedef std::pair<Timer*, int64_t>			ActiveTimer;
+		typedef std::set<ActiveTimer>				ActiveTimerSet;	
 		
 		EventLoop* 	m_loop;
 		TimerList	m_timer_list;

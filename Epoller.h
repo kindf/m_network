@@ -16,7 +16,7 @@ namespace network
 	class Epoller
 	{
 	public:
-		Epoller();
+		Epoller(EventLoop* loop);
 		~Epoller();
 		
 		void AssertInLoopThread() const
@@ -35,10 +35,10 @@ namespace network
 		typedef std::vector<struct epoll_event> EventVec;
 		static const int InitEventVecSize  = 16;
 
-		int 		m_epollfd;
-		ChannelMap 	m_channel_map;	
-		EventLoop 	m_loop;					
-		EventVec	m_event_vec; 
+		int 			m_epollfd;
+		ChannelMap 		m_channel_map;	
+		EventLoop* 		m_loop;					
+		EventVec		m_event_vec; 
 	} 
 
 }

@@ -26,6 +26,7 @@ namespace network
 		void Loop();
 		void Quit();
 		bool IsInLoopThread()const {return m_pid == std::this_thread::get_id();}
+		void AssertInLoopThread();
 		void DoPendingFunc();
 	
 		void RunInLoop(const Func& func);
@@ -40,25 +41,18 @@ namespace network
 		void HandleRead();
 
 	private:
-		bool 				m_looping;
-		bool				m_quit;
-
-		std::unique_ptr<Epoller>	m_epoller;
-		ChannelVec 			m_channel_vec;
-		const std::thread::id 		m_tid;
-
-		int 				m_wakeup_fd;
-		std::unique_ptr<Channel> 	m_wakeup_channel;
-		
-		std::vector<Func> 		m_peding_func;	
-		
-		Channel* 			m_cur_active_channel;
-
-		std::unique_ptr<TimerQueue>	m_timer_queue;
-		
-		std::mutex			m_mutex;
-		bool				m_calling_pending_func;
-
+		bool 							m_looping;
+		bool							m_quit;
+		std::unique_ptr<Epoller>		m_epoller;
+		ChannelVec 						m_channel_vec;
+		const std::thread::id 			m_tid;
+		int 							m_wakeup_fd;
+		std::unique_ptr<Channel> 		m_wakeup_channel;
+		std::vector<Func> 				m_peding_func;	
+		Channel* 						m_cur_active_channel;
+		std::unique_ptr<TimerQueue>		m_timer_queue;
+		std::mutex						m_mutex;
+		bool							m_calling_pending_func;
 }
 
 #endif

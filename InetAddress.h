@@ -2,26 +2,25 @@
 #define __INET_ADDRESS__H
 
 #include <string>
-
+#include <stdint.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 namespace network
 {
-
 	class InetAddress
 	{
 	public:
 		explicit InetAddress(uint16_t port = 0);
 		InetAddress(const char* ip, uint16_t port);
 		InetAddress(const std::string& ip, uint16_t port);
-		InetAddress(const struct sockaddr_in& addr):addr_(addr){}
-		const struct sockaddr_in& GetInetAddr() const {return addr_;}
+		InetAddress(const struct sockaddr_in& addr):m_addr(addr){}
+		const struct sockaddr_in& GetInetAddr() const {return m_addr;}
+		void SetSockAddrInet(struct sockaddr_in addr);
+		const string ToIpPort();
 	private:
-		struct sockaddr_in addr_;
+		struct sockaddr_in m_addr;
 	}
 }	
-
-
-
-
 
 #endif

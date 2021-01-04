@@ -1,41 +1,44 @@
 #include "Channel.h"
 
-using namespace network
+using namespace network;
 
-Channel::Channel(const loop, const int fd)
-:loop_(loop), fd_(fd), events_(0), revents_(0)
+namespace network
 {
-}
+	Channel::Channel(EventLoop* loop, const int fd)
+	:m_loop(loop), m_fd(fd), m_events(0), m_revents(0)
+	{
+	}
 
-void Channel::SetReadEvent()
-{
-	events_ |= EPOLLIN;
-	return Update();
-}
+	void Channel::SetReadEvent()
+	{
+		m_events |= EPOLLIN;
+		return Update();
+	}
 
-void Channel::SetWriteEvent()
-{
-	events_ |= EPOLLOUT;
-	return Update();
-}
+	void Channel::SetWriteEvent()
+	{
+		m_events |= EPOLLOUT;
+		return Update();
+	}
 
-bool Channel::Update()
-{
-	return loop_->UpdateChannel(this);
-}
+	bool Channel::Update()
+	{
+		return m_loop->UpdateChannel(this);
+	}
 
-void Channel::SetReadCallBack(const EventCallBack& cb)
-{
-	read_callback = cb;
-}
+	void Channel::SetReadCallBack(const EventCallBack& cb)
+	{
+		m_read_callback = cb;
+	}
 
-void Channel::SetWriteCallBack(const EventCallBack& cb)
-{
-	write_callback = cb;
-}
+	void Channel::SetWriteCallBack(const EventCallBack& cb)
+	{
+		m_write_callback = cb;
+	}
 
-void Channel::SetErrorCallBack(const EventCallBack& cb)
-{
-	error_callback = cb;
+	void Channel::SetErrorCallBack(const EventCallBack& cb)
+	{
+		m_error_callback = cb;
+	}
 }
 

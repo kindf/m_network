@@ -1,8 +1,7 @@
-#ifndef
+#ifndef __SINGLETON__H
 #define __SINGLETON__H
 
 template <typename T>
-
 class Singleton
 {
 public:
@@ -13,11 +12,11 @@ private:
 	Singleton() = delete;
 	Singleton(const Singleton &) = delete;
 	~Singleton()= default;	
-}
+};
 
 
 template <typename T>
-static T& Singleton::Instance()
+T& Singleton<T>::Instance()
 {
 	if(ptr == nullptr)
 	{	

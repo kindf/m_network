@@ -1,15 +1,21 @@
 #ifndef __SOCKET__H
 #define __SOCKET__H
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <assert.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 namespace network
 {
 	class InetAddress;
 
-	class Socket
+	class Sockets
 	{
 	public:
 		explicit Sockets(int sockfd):m_sockfd(sockfd){}
-		~Sockets();
+		~Sockets(){};
 
 	public:
 		static int CreateSocketOrDie();
@@ -23,7 +29,7 @@ namespace network
 		static int Accept(int fd, struct sockaddr_in* addr);
 	private:
 		int m_sockfd;
-	}
+	};
 }
 
 

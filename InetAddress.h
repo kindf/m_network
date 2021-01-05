@@ -5,22 +5,26 @@
 #include <stdint.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 namespace network
 {
 	class InetAddress
 	{
 	public:
-		explicit InetAddress(uint16_t port = 0);
-		InetAddress(const char* ip, uint16_t port);
-		InetAddress(const std::string& ip, uint16_t port);
+		static const int SIMPLE_INT = 999;
+		explicit InetAddress(unsigned short port = 0);
+		// InetAddress(){}
+		InetAddress(const char* ip, unsigned short port);
+		InetAddress(const std::string& ip, unsigned short port);
 		InetAddress(const struct sockaddr_in& addr):m_addr(addr){}
 		const struct sockaddr_in& GetInetAddr() const {return m_addr;}
 		void SetSockAddrInet(struct sockaddr_in addr);
-		const string ToIpPort();
+		//const string ToIpPort();
+		~InetAddress(){}
 	private:
 		struct sockaddr_in m_addr;
-	}
+	};
 }	
 
 #endif

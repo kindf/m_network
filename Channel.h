@@ -4,7 +4,7 @@
 #include "Sockets.h"
 #include <functional>
 
-using namespace network
+using namespace network;
 
 namespace network
 {
@@ -34,7 +34,7 @@ namespace network
 		EventLoop* 				m_loop;
 		int 					m_events;
 		int 					m_revents;
-	}
+	};
 }
 
 #endif

@@ -1,8 +1,8 @@
 #include "Sockets.h"
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <assert.h>
-#include <arpa/inet.h>
+#include "InetAddress.h"
+#include <string.h>
+#include <iostream>
+#include <unistd.h>
 
 
 namespace network
@@ -15,19 +15,19 @@ namespace network
 		addr.sin_port = htons(port);
 		inet_pton(AF_INET, ip, &addr.sin_addr);
 		
-		int ret = ::bind(sockfd_, (struct sockaddr*) &addr, sizeof(addr));
+		int ret = ::bind(m_sockfd, (struct sockaddr*) &addr, sizeof(addr));
 		assert(ret != -1);
 	}
 
 	void Sockets::BindOrDie(const InetAddress* addr)
 	{
-		int ret = ::bind(sockfd_, addr->GetInetAddr(), sizeof(addr->GetInetAddr());
+		int ret = ::bind(m_sockfd, (sockaddr*)&addr->GetInetAddr(), sizeof(addr->GetInetAddr()));
 		assert(ret != -1);
 	}
 
 	void Sockets::ListenOrDie()
 	{
-		int ret = ::listen(sockfd_, SOMAXCONN);
+		int ret = ::listen(m_sockfd, SOMAXCONN);
 		assert(ret >= 0);
 	}	
 
@@ -38,7 +38,7 @@ namespace network
 		int connfd = Accept(m_sockfd, &addr);
 		if (connfd >= 0)
 		{
-			peer_addr->SetSockAddrInet(addr);
+			peer_addr.SetSockAddrInet(addr);
 		}
 		return connfd;
 	}
@@ -52,7 +52,8 @@ namespace network
 
 	int Sockets::Accept(int fd, struct sockaddr_in* addr)
 	{
-		int connfd = ::accept(sockfd_, addr, static_cast<socklen_t>(sizeof(*addr));
+		socklen_t len = static_cast<socklen_t>(sizeof *addr);
+		int connfd = ::accept(fd, (sockaddr*)addr, &len);
 		return connfd;
 	}
 

@@ -1,7 +1,7 @@
 #ifndef __EVENTLOOP__H
 #define __EVENTLOOP__H
 
-#include <vetor>
+#include <vector>
 #include <thread>
 #include <memory>
 #include <mutex>
@@ -53,6 +53,7 @@ namespace network
 		std::unique_ptr<TimerQueue>		m_timer_queue;
 		std::mutex						m_mutex;
 		bool							m_calling_pending_func;
+	};
 }
 
 #endif

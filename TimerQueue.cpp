@@ -1,10 +1,13 @@
 #include "TimerQueue.h"
+#include "EventLoop.h"
+#include "TimerId.h"
+#include "Timer.h"
 
 using namespace network;
 
 namespace network
 {
-	TimerQueue::TimerQueue(EvnetLoop* loop):m_loop(loop),m_timer_list()
+	TimerQueue::TimerQueue(EventLoop* loop):m_loop(loop),m_timer_list()
 	{
 	}
 
@@ -25,21 +28,21 @@ namespace network
 		return TimerId(timer, timer->Sequence());
 	}
 
-	TimerId TimerQueue::AddTimer(TimerCallback callback, Timestamp when, int64_t interval, int64_t repeat_count)
-	{
-		Timer* timer = new Timer(callback, when, interval, repeat_count);
-		m_loop->RunInLoop(std::bind(&TimerQueue::AddTimerInLoop, this, timer));
-		return TimerId(timer, timer->Sequence());
-	}
+	// TimerId TimerQueue::AddTimer(TimerCallback callback, Timestamp when, int64_t interval, int64_t repeat_count)
+	// {
+	// 	Timer* timer = new Timer(callback, when, interval, repeat_count);
+	// 	m_loop->RunInLoop(std::bind(&TimerQueue::AddTimerInLoop, this, timer));
+	// 	return TimerId(timer, timer->Sequence());
+	// }
 
 	void TimerQueue::RemoveTimer(TimerId timer_id)
 	{
-		m_loop->RunInLoop(std::bind(&TimerQueue::ReomveTimerInLoop, this, timer_id);
+		m_loop->RunInLoop(std::bind(&TimerQueue::RemoveTimerInLoop, this, timer_id));
 	}
 
-	void TimerQueue::Cancel(TImerId timer_id, bool off)
+	void TimerQueue::Cancel(TimerId timer_id, bool off)
 	{
-		m_loop->RunInLoop(std::bind(&TimerQueue::CancelTimerInLoop, this, timer_id, off);
+		m_loop->RunInLoop(std::bind(&TimerQueue::CancelTimerInLoop, this, timer_id, off));
 	}
 
 	void TimerQueue::DoTimer()
@@ -65,6 +68,7 @@ namespace network
 			{
 				break;
 			}
+		}
 	}
 
 	void TimerQueue::AddTimerInLoop(Timer* timer)
@@ -94,7 +98,7 @@ namespace network
 		Timer* timer = timer_id.m_timer;
 		for(auto it = m_timer_list.begin(); it != m_timer_list.end(); ++it)
 		{
-			if(timer == it.second)
+			if(timer == it->second)
 			{
 				it->second->Cancel(off);
 				break;
@@ -108,4 +112,5 @@ namespace network
 		Timestamp when = timer->Expiration();
 		m_timer_list.insert(Entry(when, timer));
 	}
+
 }

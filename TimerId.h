@@ -25,7 +25,7 @@ namespace network
 	private:
 		int64_t 	m_sequence;
 		Timer* 		m_timer;	
-	}	
+	};
 
 }
 

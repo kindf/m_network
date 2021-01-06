@@ -24,7 +24,7 @@ namespace network
 
 		TimerId AddTimer(const TimerCallback& callback, Timestamp when, int64_t interval, int64_t repeat_count);
 
-		TimerId AddTimer(TimerCallback callback, Timestamp when, int64_t interval, int64_t repeat_count);
+		// TimerId AddTimer(TimerCallback callback, Timestamp when, int64_t interval, int64_t repeat_count);
 
 		void RemoveTimer(TimerId timer_id);
 		void Cancel(TimerId timer_id, bool off);

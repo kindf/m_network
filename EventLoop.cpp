@@ -1,6 +1,11 @@
 #include "EventLoop.h"
 #include <sys/eventfd.h>
-#include <cassert>
+#include <assert.h>
+#include "TimerQueue.h"
+#include "Epoller.h"
+#include "Timestamp.h"
+#include<unistd.h> 
+
 
 using namespace network;
 
@@ -15,19 +20,19 @@ namespace network
 	{
 		m_epoller.reset(new Epoller(this));
 		CreateWakeUpFd();
-		m_wakeup_channel.reset(new Channel(this, m_wakeup_fd);
-		m_wakeup_channel->SetReadCallBack(std::bind(&EventLoop::HandleRead, this);
+		m_wakeup_channel.reset(new Channel(this, m_wakeup_fd));
+		m_wakeup_channel->SetReadCallBack(std::bind(&EventLoop::HandleRead, this));
 		m_wakeup_channel->SetReadEvent();	
 	}
 
 
-	EventLoop::Loop()
+	void EventLoop::Loop()
 	{
-		assert(IsInLoopThread);
+		assert(IsInLoopThread());
 		while(!m_quit)
 		{
 			m_timer_queue->DoTimer();
-			m_cur_active_channel.clear();
+			//m_cur_active_channel->clear();
 			m_epoller->Poll(1, m_channel_vec);
 			for(const auto& it : m_channel_vec)
 			{
@@ -53,7 +58,7 @@ namespace network
 		m_calling_pending_func = false;
 	}
 
-	void EventLoop::RunInLoop(Func& func)
+	void EventLoop::RunInLoop(const Func& func)
 	{
 		if(IsInLoopThread())
 		{
@@ -70,11 +75,11 @@ namespace network
 		assert(IsInLoopThread());
 	}
 
-	void EventLoop::QueueInLoop(Func& func)
+	void EventLoop::QueueInLoop(const Func& func)
 	{
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
-			m_peding_func.push_back(func);
+			m_pending_func.push_back(func);
 		}
 
 		if(!IsInLoopThread() || m_calling_pending_func)
@@ -92,20 +97,20 @@ namespace network
 		}
 	}
 
-	TimerId EventLoop::RunAt(const Timestamp& when, const TimerCallback& cb)
+	TimerId EventLoop::RunAt(Timestamp& when, TimerCallback& cb)
 	{
 		return m_timer_queue->AddTimer(cb, when, 0, 1);	
 	}
 
-	TimerId EventLoop::RunAfter(int64_t delay, const TimerCallback& cb)
+	TimerId EventLoop::RunAfter(int64_t delay, TimerCallback& cb)
 	{
-		Timestamp time(AddTimer(Timestamp::now(), delay));
-		return RunAt(tim, cb);
+		Timestamp time(AddTime(Timestamp::now(), delay));
+		return RunAt(time, cb);
 	}
 
-	TimerId EventLoop::RunEvery(int64_t interval, const TimerCallback& cb)
+	TimerId EventLoop::RunEvery(int64_t interval, TimerCallback& cb)
 	{
-		Timestamp time(AddTimer(Timestamp::now(), interval);
+		Timestamp time(AddTime(Timestamp::now(), interval));
 		return m_timer_queue->AddTimer(cb, time, interval, -1);	
 	}
 
@@ -120,15 +125,15 @@ namespace network
 	{
 		uint64_t wdata = 0;
 		int n = ::write(m_wakeup_fd, &wdata, sizeof(wdata));
-		assert(n != sizeof(wdata);
+		assert(n != sizeof(wdata));
 		return true;
 	}
 
 	bool EventLoop::HandleRead()
 	{
 		uint64_t rdata;
-		int n = ::read(m_wakeup_fd, &rdate, sizeof(rdata));
-		assert(n == sizeof(rdata);
+		int n = ::read(m_wakeup_fd, &rdata, sizeof(rdata));
+		assert(n == sizeof(rdata));
 		return true;
 	}
 }

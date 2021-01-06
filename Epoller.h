@@ -4,42 +4,44 @@
 #include <sys/epoll.h>
 #include <map>
 #include "Channel.h"
+#include "EventLoop.h"
 
 
-using namespace network
+using namespace network;
 
 namespace network
 {
-	class Eventloop;
-	class Channel;
+	//class Eventloop;
+	//class Channel;
 
 	class Epoller
 	{
 	public:
 		Epoller(EventLoop* loop);
-		~Epoller();
+		~Epoller(){};
 		
-		void AssertInLoopThread() const
-		{
-			m_loop->AssertInLoopThread();
-		}
+		void AssertInLoopThread();
 
-		void Poll(int timeout, std::vector<Channel> active_channel);
+		void Poll(int timeout, std::vector<Channel*> &active_channel);
 		bool UpdateChannel(Channel* channel);
 		void RemoveChannel(Channel* channel);
 		
+		typedef std::map<int, Channel*> ChannelPtrMap;
+		typedef std::vector<struct epoll_event> EventVec;
+
+		const int kNew = -1;
+		const int kAdded = 1;
+		const int kDeleted = 2;
 	private:
 		bool Update(int operaton, Channel* channel);
 	private:
-		typedef std::map<int, Channel*> ChannelMap;
-		typedef std::vector<struct epoll_event> EventVec;
 		static const int InitEventVecSize  = 16;
 
 		int 			m_epollfd;
-		ChannelMap 		m_channel_map;	
+		ChannelPtrMap 	m_channel_map;	
 		EventLoop* 		m_loop;					
 		EventVec		m_event_vec; 
-	} 
+	};
 
 }
 

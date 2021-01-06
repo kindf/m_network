@@ -1,21 +1,23 @@
 #include "Channel.h"
+#include "EventLoop.h"
+#include <sys/epoll.h>
 
 using namespace network;
 
 namespace network
 {
 	Channel::Channel(EventLoop* loop, const int fd)
-	:m_loop(loop), m_fd(fd), m_events(0), m_revents(0)
+	: m_loop(loop), m_fd(fd), m_events(0), m_revents(0)
 	{
 	}
 
-	void Channel::SetReadEvent()
+	bool Channel::SetReadEvent()
 	{
 		m_events |= EPOLLIN;
 		return Update();
 	}
 
-	void Channel::SetWriteEvent()
+	bool Channel::SetWriteEvent()
 	{
 		m_events |= EPOLLOUT;
 		return Update();
@@ -39,6 +41,11 @@ namespace network
 	void Channel::SetErrorCallBack(const EventCallBack& cb)
 	{
 		m_error_callback = cb;
+	}
+
+	void Channel::HandleEvent()
+	{
+
 	}
 }
 

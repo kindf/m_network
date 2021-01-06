@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "Epoller.h"
+#include <cstring>
 
 using namespace network;
 
@@ -12,9 +13,9 @@ namespace network
 		m_channel_map.clear();	
 	}
 
-	void Epoller::Poll(int timeout, std::vector<Channel*> active_channel_vec) const
+	void Epoller::Poll(int timeout, std::vector<Channel*> &active_channel_vec)
 	{
-		int ret_num = ::epoll_wait(m_epollfd, &m_event_vec, &*m_event_vec.begin(), 
+		int ret_num = ::epoll_wait(m_epollfd, &*m_event_vec.begin(), 
 						static_cast<int>(m_event_vec.size()),
 						timeout);
 		if(ret_num > 0)
@@ -23,7 +24,7 @@ namespace network
 			{
 				Channel* channel = static_cast<Channel*>(m_event_vec[i].data.ptr);
 				int fd = channel->GetFd();
-				ChannelMap::const_iterator it = m_channel_map.find(fd);
+				ChannelPtrMap::const_iterator it = m_channel_map.find(fd);
 				if(it == m_channel_map.end() || it->second != channel)
 				{
 					continue;
@@ -44,6 +45,11 @@ namespace network
 		{
 
 		}
+	}
+
+	void Epoller::AssertInLoopThread()
+	{
+		m_loop->AssertInLoopThread();
 	}
 
 	bool Epoller::UpdateChannel(Channel* channel)
@@ -82,7 +88,7 @@ namespace network
 			}
 			if(channel->IsNoneEvent())
 			{
-				if(Update(EPOLL_CTL_DEL, channel)
+				if(Update(EPOLL_CTL_DEL, channel))
 				{
 					channel->SetIndex(kDeleted);
 					return true;
@@ -105,7 +111,7 @@ namespace network
 		}
 
 		int index = channel->GetIndex();
-		if(index !+ kAdded && index != kDeleted)
+		if(index != kAdded && index != kDeleted)
 		{
 			return;
 		}
@@ -128,7 +134,7 @@ namespace network
 		struct epoll_event event;
 		memset(&event, 0, sizeof(event));
 		event.data.ptr = channel;
-		event.events = channel->events();
+		event.events = channel->GetEvents();
 		int fd = channel->GetFd();
 		if(::epoll_ctl(m_epollfd, operation, fd, &event) < 0)
 		{

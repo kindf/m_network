@@ -44,7 +44,6 @@ namespace network
 		
 		static std::atomic<int64_t> m_created_num;
 	};
-
-
 }
+
 #endif

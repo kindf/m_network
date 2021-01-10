@@ -1,13 +1,14 @@
 #include "Channel.h"
 #include "EventLoop.h"
 #include <sys/epoll.h>
+#include "Epoller.h"
 
 using namespace network;
 
 namespace network
 {
 	Channel::Channel(EventLoop* loop, const int fd)
-	: m_loop(loop), m_fd(fd), m_events(0), m_revents(0)
+	: m_loop(loop), m_fd(fd), m_events(0), m_revents(0), m_index(Epoller::kNew)
 	{
 	}
 

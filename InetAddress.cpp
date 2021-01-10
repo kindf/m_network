@@ -1,4 +1,4 @@
-#include "./InetAddress.h"
+#include "InetAddress.h"
 #include <string.h>
 
 namespace network

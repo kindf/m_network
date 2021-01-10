@@ -1,10 +1,10 @@
 #include "EventLoop.h"
 #include <sys/eventfd.h>
 #include <assert.h>
-#include "TimerQueue.h"
-#include "Epoller.h"
+// #include "TimerQueue.h"
+// #include "Epoller.h"
 #include "Timestamp.h"
-#include<unistd.h> 
+#include <unistd.h> 
 
 
 using namespace network;
@@ -135,5 +135,15 @@ namespace network
 		int n = ::read(m_wakeup_fd, &rdata, sizeof(rdata));
 		assert(n == sizeof(rdata));
 		return true;
+	}
+
+	bool EventLoop::UpdateChannel(Channel* channel)
+	{
+		if(channel->OwnerLoop() != this)
+		{
+			return false;
+		}
+		AssertInLoopThread();
+		return m_epoller->UpdateChannel(channel);
 	}
 }

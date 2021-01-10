@@ -29,9 +29,9 @@ namespace network
 		typedef std::map<int, Channel*> ChannelPtrMap;
 		typedef std::vector<struct epoll_event> EventVec;
 
-		const int kNew = -1;
-		const int kAdded = 1;
-		const int kDeleted = 2;
+		static const int kNew = -1;
+		static const int kAdded = 1;
+		static const int kDeleted = 2;
 	private:
 		bool Update(int operaton, Channel* channel);
 	private:
@@ -44,8 +44,5 @@ namespace network
 	};
 
 }
-
-
-
 
 #endif

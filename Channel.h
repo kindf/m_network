@@ -31,6 +31,7 @@ namespace network
 		void SetIndex(int index){m_index = index;}
 		bool IsNoneEvent(){return false;}
 		int GetEvents()const{return m_events;}
+		EventLoop* OwnerLoop()const{return m_loop;}
 	private:
 		EventCallBack 			m_read_callback;
 		EventCallBack 			m_write_callback;

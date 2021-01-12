@@ -46,7 +46,15 @@ namespace network
 
 	void Channel::HandleEvent()
 	{
+		if(m_revents & EPOLLIN)
+		{
+			m_read_callback();
+		}
 
+		if(m_revents & EPOLLRDNORM)
+		{
+			m_write_callback();
+		}
 	}
 }
 

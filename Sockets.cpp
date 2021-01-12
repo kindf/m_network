@@ -15,12 +15,23 @@ namespace network
 		addr.sin_port = htons(port);
 		inet_pton(AF_INET, ip, &addr.sin_addr);
 		
+		int reuse = 1;
+		setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 		int ret = ::bind(m_sockfd, (struct sockaddr*) &addr, sizeof(addr));
+		if(ret == -1)
+		{
+			int error_num = -1;
+			socklen_t len = sizeof(error_num);
+			getsockopt(m_sockfd, SOL_SOCKET, SO_ERROR, &error_num, &len);
+			std::cout<<"Bind error, error number:"<<error_num<<std::endl;
+		}
 		assert(ret != -1);
 	}
 
 	void Sockets::BindOrDie(const InetAddress* addr)
 	{
+		int reuse = 1;
+		setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 		int ret = ::bind(m_sockfd, (sockaddr*)&addr->GetInetAddr(), sizeof(addr->GetInetAddr()));
 		assert(ret != -1);
 	}

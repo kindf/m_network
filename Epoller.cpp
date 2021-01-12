@@ -18,32 +18,27 @@ namespace network
 		int ret_num = ::epoll_wait(m_epollfd, &*m_event_vec.begin(), 
 						static_cast<int>(m_event_vec.size()),
 						timeout);
-		if(ret_num > 0)
+		
+		if(ret_num <= 0)
 		{
-			for(int i=0; i < ret_num; ++i)
-			{
-				Channel* channel = static_cast<Channel*>(m_event_vec[i].data.ptr);
-				int fd = channel->GetFd();
-				ChannelPtrMap::const_iterator it = m_channel_map.find(fd);
-				if(it == m_channel_map.end() || it->second != channel)
-				{
-					continue;
-				}
-				channel->SetRevents(m_event_vec[i].events);
-				active_channel_vec.push_back(channel);
-			}	
-			if(static_cast<int>(ret_num) == m_event_vec.size())
-			{
-				m_event_vec.resize(ret_num*2);
-			}
+			return;
 		}
-		else if(ret_num == 0)
-		{
-			
-		}
-		else
-		{
 
+		for(int i=0; i < ret_num; ++i)
+		{
+			Channel* channel = static_cast<Channel*>(m_event_vec[i].data.ptr);
+			int fd = channel->GetFd();
+			ChannelPtrMap::const_iterator it = m_channel_map.find(fd);
+			if(it == m_channel_map.end() || it->second != channel)
+			{
+				continue;
+			}
+			channel->SetRevents(m_event_vec[i].events);
+			active_channel_vec.push_back(channel);
+		}	
+		if(static_cast<int>(ret_num) == m_event_vec.size())
+		{
+			m_event_vec.resize(ret_num*2);
 		}
 	}
 
@@ -65,6 +60,8 @@ namespace network
 				return false;
 			}
 			m_channel_map[fd] = channel;	
+			channel->SetIndex(kAdded);
+			return Update(EPOLL_CTL_ADD, channel);
 		}	
 		else if(index == kDeleted)
 		{

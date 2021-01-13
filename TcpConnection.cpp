@@ -1,10 +1,15 @@
 
+
+#include <iostream>
 #include "TcpConnection.h"
+#include "EventLoop.h"
+
+using namespace network;
 
 namespace network
 {
-    TcpConnection::TcpConnection(EventLoop* loop, int fd, string name)
-    : m_loop = loop
+    TcpConnection::TcpConnection(EventLoop* loop, int fd, std::string name)
+    : m_loop(loop)
     , m_channel_ptr(new Channel(loop, fd))
     , m_input_buff()
     , m_output_buff()
@@ -20,15 +25,15 @@ namespace network
 
         if(n > 0)
         {
-            m_message_callback(share_from_this());
+            m_message_callback(shared_from_this());
         }
         else if(n == 0)
         {
-            HandleClose();
+            // HandleClose();
         }
         else
         {
-            HandleError();
+            // HandleError();
         }
         
     }
@@ -39,14 +44,14 @@ namespace network
         int n = 0;
         while(1)
         {
-            int read_byet = ::recv(m_channel.GetFd(), buffer, MAX_INPUT_BUFFER_SIZE-1, 0);
+            int read_byet = ::recv(m_channel_ptr->GetFd(), buffer, MAX_INPUT_BUFFER_SIZE-1, 0);
             if(read_byet > 0)
             { 
                 n += read_byet;
             }   
-            else if(read_tyet == 0)
+            else if(read_byet == 0)
             {
-                HandleClose();
+                // HandleClose();
             }
             else
             {
@@ -54,7 +59,7 @@ namespace network
                 {
                     break;
                 }
-                HandleError();
+                // HandleError();
             }
             
         };
@@ -65,7 +70,7 @@ namespace network
 
     void TcpConnection::ConnectEstablished()
     {
-
+        std::cout<<"TcpConnection::ConnectEstablished"<<std::endl;
     }
 
     void TcpConnection::ConnectDestroyed()

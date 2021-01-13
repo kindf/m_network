@@ -2,12 +2,18 @@
 #define __ACCEPTOR__H
 
 #include "Callback.h"
+#include "Channel.h"
+#include "EventLoop.h"
+#include "InetAddress.h"
+
+using namespace network;
 
 namespace network
 {
-    class Channel;
-    class EventLoop;
-    class Socket;
+    // class Channel;
+    // class EventLoop;
+    // class Sockets;
+    // class InetAddress;
 
     class Acceptor
     {
@@ -16,9 +22,9 @@ namespace network
 
     public:
         Acceptor(EventLoop* loop, const InetAddress* listent_addr);
-        ~Acceptor();
+        ~Acceptor(){};
 
-        void Listen();
+        bool Listen();
         void SetNewConnectionCallback(const NewConnectionCallback& cb){m_new_connection_callback = cb;}
     private:
         Acceptor& operator=(const Acceptor&);
@@ -27,11 +33,11 @@ namespace network
 
     private:
         EventLoop*                      m_loop;
-        Channel                         m_accpet_channel;
         Sockets                         m_accept_sock;
+        Channel                         m_accept_channel;
         NewConnectionCallback           m_new_connection_callback;
         bool                            m_listening;
-    }
+    };
 }
 
 #endif

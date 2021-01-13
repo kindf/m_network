@@ -32,7 +32,7 @@ namespace network
 		while(!m_quit)
 		{
 			m_timer_queue->DoTimer();
-			//m_cur_active_channel->clear();
+			m_channel_vec.clear();
 			m_epoller->Poll(1, m_channel_vec);
 			for(const auto& it : m_channel_vec)
 			{

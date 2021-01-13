@@ -1,6 +1,9 @@
 #include <assert.h>
 #include "Epoller.h"
 #include <cstring>
+#include <string.h>
+#include <errno.h>
+#include <iostream>
 
 using namespace network;
 
@@ -96,6 +99,7 @@ namespace network
 				}
 			}
 		}	
+		return true;
 	}
 
 	void Epoller::RemoveChannel(Channel* channel)
@@ -135,6 +139,7 @@ namespace network
 		int fd = channel->GetFd();
 		if(::epoll_ctl(m_epollfd, operation, fd, &event) < 0)
 		{
+			std::cout<<strerror(errno)<<std::endl;
 			return false;
 		}
 		return true;

@@ -1,7 +1,5 @@
+
 #include "Acceptor.h"
-#include "Channel.h"
-#include "EventLoop.h"
-#include "InetAddress.h"
 #include <iostream>
 
 namespace network
@@ -14,36 +12,36 @@ namespace network
         {
             // FIXME:reuseaddr, reuseport
             m_accept_sock.BindOrDie(listent_addr);
-            m_accept_channel.SetReadCallBack(std::bind(Acceptor::HandleRead, this));
+            m_accept_channel.SetReadCallBack(std::bind(&Acceptor::HandleRead, this));
         }
 
-    void Acceptor::Listen()
+    bool Acceptor::Listen()
     {
         m_loop->IsInLoopThread();
         m_listening = true;
-        m_accept_sock.Listen();
-        m_accept_channel.SetReadEvent();
+        m_accept_sock.ListenOrDie();
+        return m_accept_channel.SetReadEvent();
     }
 
     void Acceptor::HandleRead()
     {
         m_loop->AssertInLoopThread();
         InetAddress peer_addr;
-        int conn_fd = m_accept_sock.AcceptSoct(peer_addr);
+        int conn_fd = m_accept_sock.AcceptSock(peer_addr);
         if(conn_fd >= 0)
         {
             if (m_new_connection_callback)
             {
-                m_new_connection_callback(connfd, peerAddr);
+                m_new_connection_callback(conn_fd, peer_addr);
             }
             else
             {
-                Sockets::Close(connfd);
+                Sockets::Close(conn_fd);
             }
         }
         else
         {
-            std::count<<"Acceptor::HandleRead() "<<"accept error"<<std::endl;
+            std::cout<<"Acceptor::HandleRead() "<<"accept error"<<std::endl;
         }
         
     }

@@ -1,5 +1,6 @@
 #include "EventLoopThreadPool.h"
 #include "EventLoopThread.h"
+#include "EventLoop.h"
 
 using namespace network;
 
@@ -41,8 +42,8 @@ namespace network
         for(int i = 0; i < m_threads_num; ++i)
         {
             std::unique_ptr<EventLoopThread> loop_ptr(new EventLoopThread(cb));
-            m_loops_list.push_back(loop_ptr->Start());
-            m_threads.push_back(loop_ptr);
+            m_loops_list.push_back(loop_ptr->StartLoop());
+            m_threads.push_back(std::move(loop_ptr));
         }
         m_started = true;
     }

@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 
+#include "Callback.h"
+
 namespace network
 {
     class EventLoopThread;
@@ -14,7 +16,7 @@ namespace network
     class EventLoopThreadPool
     {
     public:
-
+        typedef std::function<void(EventLoop*)> ThreadInitCallback;
     public:
         EventLoopThreadPool(EventLoop* loop);
         ~EventLoopThreadPool();

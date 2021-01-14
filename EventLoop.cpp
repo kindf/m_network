@@ -1,11 +1,13 @@
-#include "EventLoop.h"
+
 #include <sys/eventfd.h>
 #include <assert.h>
-// #include "TimerQueue.h"
-// #include "Epoller.h"
-#include "Timestamp.h"
+#include <string.h>
+#include <errno.h>
 #include <unistd.h> 
+#include <iostream>
 
+#include "EventLoop.h"
+#include "Timestamp.h"
 
 using namespace network;
 
@@ -125,7 +127,12 @@ namespace network
 	{
 		uint64_t wdata = 0;
 		int n = ::write(m_wakeup_fd, &wdata, sizeof(wdata));
-		assert(n != sizeof(wdata));
+		if(n != sizeof(wdata))
+		{
+			std::cout<<"EventLoop::WakeUp error, error msg: "<<std::endl;
+			std::cout<<strerror(errno)<<std::endl;
+			return false;
+		}
 		return true;
 	}
 

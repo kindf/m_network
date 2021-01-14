@@ -1,4 +1,5 @@
 #include "EventLoopThread.h"
+#include "EventLoop.h"
 
 using namespace network;
 
@@ -24,7 +25,7 @@ namespace network
 
     EventLoop* EventLoopThread::StartLoop()
     {
-        m_thread.reset(new std::thread(std::bind(&EventLoopThread::ThreadFunc, this));
+        m_thread.reset(new std::thread(std::bind(&EventLoopThread::ThreadFunc, this)));
         {
 		    std::unique_lock<std::mutex> lock(m_mutex);
             while (m_loop == NULL)
@@ -39,7 +40,7 @@ namespace network
     {
         if (m_loop != NULL)
         {
-            loop_->Quit();
+            m_loop->Quit();
         }
         m_thread->join();
     }
@@ -49,7 +50,7 @@ namespace network
         EventLoop loop;
         if(m_callback)
         {
-            m_callback();
+            m_callback(&loop);
         }
         {
             std::unique_lock<std::mutex> lock(m_mutex);
@@ -57,7 +58,7 @@ namespace network
 		    m_cond.notify_all();
         }
         loop.Loop();
-        m_loop = NULL:
+        m_loop = NULL;
     }
 }
 

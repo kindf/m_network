@@ -28,6 +28,11 @@ namespace network
 		void ConnectEstablished();
 		void ConnectDestroyed();
 		const string& GetName()const{return m_name;};
+		EventLoop* GetLoop()const {return m_loop;}
+
+		void SetWriteCompleteCallback(WriteCompleteCallback& cb){m_write_callback = cb;}
+		void SetMessageCallback(MessageCallback& cb){m_message_callback = cb;}
+		void SetConnectionCallback(ConnectionCallback& cb){m_connection_callback = cb;}
 	private:
 		TcpConnection(const TcpConnection&);
 		TcpConnection& operator= (const TcpConnection&);

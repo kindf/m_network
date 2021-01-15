@@ -1,9 +1,11 @@
-#include "Sockets.h"
-#include "InetAddress.h"
+
 #include <string.h>
 #include <iostream>
 #include <unistd.h>
+#include <fcntl.h>
 
+#include "Sockets.h"
+#include "InetAddress.h"
 
 namespace network
 {
@@ -65,6 +67,7 @@ namespace network
 	{
 		socklen_t len = static_cast<socklen_t>(sizeof *addr);
 		int connfd = ::accept(fd, (sockaddr*)addr, &len);
+		SetSocketNonBlock(connfd);
 		return connfd;
 	}
 
@@ -74,6 +77,14 @@ namespace network
 		{
 			std::cout<<"Sockets::Close() error! fd="<<fd<<std::endl;
 		}
+	}
+
+	void Sockets::SetSocketNonBlock(int fd)
+	{
+		int flags = ::fcntl(fd, F_GETFL, 0);
+    	flags |= O_NONBLOCK;
+    	int ret = ::fcntl(fd, F_SETFL, flags);
+    	(void)ret;
 	}
 }
 

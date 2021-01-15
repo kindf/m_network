@@ -24,7 +24,11 @@ namespace network
 		static const int MAX_OUTPUT_BUFFER_SIZE = 65535;
 
 	public:
-		void HandleRead();
+		void Send(const void* message, int len);
+		void Send(const std::string& message);
+
+		std::string GetInputStr()const{return m_input_buff;}
+		
 		void ConnectEstablished();
 		void ConnectDestroyed();
 		const string& GetName()const{return m_name;};
@@ -37,6 +41,10 @@ namespace network
 		TcpConnection(const TcpConnection&);
 		TcpConnection& operator= (const TcpConnection&);
 
+		void SendInLoop(const void* data, int len);
+		void HandleRead();
+		void HandleWrite();
+		void HandleClose();
 		int OnReadFd();
 
 	private:

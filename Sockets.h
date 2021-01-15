@@ -25,6 +25,7 @@ namespace network
 		void ListenOrDie();
 		int AcceptSock(InetAddress& peer_addr);
 		static void Close(int fd);
+		static void SetSocketNonBlock(int fd);
 	public:
 		static int Accept(int fd, struct sockaddr_in* addr);
 	private:

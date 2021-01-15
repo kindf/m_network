@@ -20,6 +20,11 @@ namespace network
 		bool SetReadEvent();
 		bool SetWriteEvent();
 		bool SetErrorEvent();
+
+		bool DisableReadEvent();
+		bool DisableWriteEvent();
+		bool DisableAllEvent();
+
 		bool Update();
 		void SetReadCallBack(const EventCallBack& cb);
 		void SetWriteCallBack(const EventCallBack& cb);

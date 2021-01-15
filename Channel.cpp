@@ -24,6 +24,24 @@ namespace network
 		return Update();
 	}
 
+	bool Channel::DisableReadEvent()
+	{
+		m_events &= ~EPOLLIN;
+		return Update();
+	}
+
+	bool Channel::DisableWriteEvent()
+	{
+		m_events &= ~EPOLLOUT;
+		return Update();
+	}
+
+	bool Channel::DisableAllEvent()
+	{
+		m_events = 0;
+		return Update();
+	}
+
 	bool Channel::Update()
 	{
 		return m_loop->UpdateChannel(this);

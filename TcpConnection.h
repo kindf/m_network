@@ -28,6 +28,7 @@ namespace network
 		void Send(const std::string& message);
 
 		std::string GetInputStr()const{return m_input_buff;}
+		void ClearInputBuff(){m_input_buff.clear();}
 		
 		void ConnectEstablished();
 		void ConnectDestroyed();
@@ -35,7 +36,7 @@ namespace network
 		EventLoop* GetLoop()const {return m_loop;}
 
 		void SetWriteCompleteCallback(WriteCompleteCallback& cb){m_write_callback = cb;}
-		void SetMessageCallback(MessageCallback& cb){m_message_callback = cb;}
+		void SetMessageCallback(const MessageCallback& cb){m_message_callback = cb;}
 		void SetConnectionCallback(ConnectionCallback& cb){m_connection_callback = cb;}
 	private:
 		TcpConnection(const TcpConnection&);

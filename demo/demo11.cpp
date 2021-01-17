@@ -12,7 +12,8 @@ void MessageFunc(const network::TcpConnectionPtr& conn_ptr)
 {
 	std::string msg = conn_ptr->GetInputStr();
 	std::cout<<msg<<std::endl;
-	conn_ptr->Send((const void*)msg.c_str(), msg.length());	
+	conn_ptr->Send((const void*)msg.c_str(), msg.length());
+	conn_ptr->ClearInputBuff();
 }
 
 int main(int agrc, char* agrv[])

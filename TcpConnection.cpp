@@ -74,7 +74,7 @@ namespace network
         int n = send(m_channel_ptr->GetFd(), (const char*)m_output_buff.c_str(), total_len, 0);
         if(n > 0)
         {
-            m_output_buff.erase(n);
+            m_output_buff.erase(0, n);
             if(m_output_buff.length() == 0)
             {
                 m_channel_ptr->DisableWriteEvent();
@@ -137,6 +137,8 @@ namespace network
             std::cout<<"TcpConnection::ConnectEstablished channel readevent error, connction close"<<std::endl;
             HandleClose();
         }
+
+        m_connection_callback(shared_from_this());
     }
 
     void TcpConnection::ConnectDestroyed()

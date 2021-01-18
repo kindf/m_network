@@ -1,8 +1,8 @@
-OBJECTS = ./demo.cpp ../EventLoop.cpp ../TimerQueue.cpp ../Timer.cpp ../Timestamp.cpp ../Sockets.cpp ../Epoller.cpp ../Channel.cpp ../InetAddress.cpp ../Acceptor.cpp ../TcpConnection.cpp ../EventLoopThread.cpp ../TcpServer.cpp ../EventLoopThreadPool.cpp ./HttpServer.cpp ./HttpSession.cpp
+OBJECTS = ./demo.cpp ./HttpServer.cpp ./HttpSession.cpp ../Network/*.cpp
 CC = g++
 CPPFLAGS = -g -o 
 # LIBS = -I /usr/lib64/mysql -lmysqlclient -ljson-c
-LIBS = -pthread
+LIBS = -pthread 
 OUTPUT = demo
 
 test:$(OBJECTS)

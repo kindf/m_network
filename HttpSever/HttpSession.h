@@ -3,8 +3,11 @@
 
 #include <string>
 #include <memory>
+#include <sys/types.h>    
+#include <sys/stat.h>   
+#include <sys/uio.h>
 
-#include "../Callback.h"
+#include "../Network/Callback.h"
 
 using namespace network;
 
@@ -46,8 +49,13 @@ namespace network
         TcpConnectionPtr GetConnectionPtr();
         void OnRead(const TcpConnectionPtr& conn_ptr);
 
-        int ProcessRead();
-        
+    private:
+        void AddHeader(int content_len);
+        void AddContentLength(int content_len);
+        void AddLinger();
+        void AddStatusLine(int status, const char* title);
+        void AddBlankLine();
+        void AddContent(const char* content);
     private:
         std::weak_ptr<TcpConnection>        m_temp_conn;
         int                                 m_check_state;
@@ -55,6 +63,11 @@ namespace network
         std::string         m_url;
         std::string         m_version;
         std::string         m_host;
+
+        std::string         m_http_response;    // 相应内容
+
+        struct stat m_file_stat;
+        struct iovec m_iv[2];
     };
 }
 

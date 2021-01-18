@@ -4,14 +4,30 @@
 #include <sstream>
 
 #include "HttpSession.h"
-#include "../TcpConnection.h"
+#include "../Network/TcpConnection.h"
 
 using namespace network;
+
+const char* ok_200_title = "OK";
+
+const char* error_400_title = "Bad Request";
+const char* error_400_form = "Your request has bad syntax ot is inherently impossible to satisfy.\n";
+
+const char* error_403_title = "Forbidden";
+const char* error_403_form = "You do not have permission to get file from this server.\n";
+
+const char* error_404_title = "Not Found";
+const char* error_404_form ="The requested file was not found on this server.\n";
+
+const char* error_500_title = "Internal Error";
+const char* error_500_form = "There was an unusual problem serving the requested file.\n";
 
 namespace network
 {
 
-	HttpSession::HttpSession(std::shared_ptr<TcpConnection>& conn) : m_temp_conn(conn)
+	HttpSession::HttpSession(std::shared_ptr<TcpConnection>& conn) 
+	: m_temp_conn(conn)
+	, m_http_response()
 	{
 
 	}
@@ -30,72 +46,52 @@ namespace network
 		std::string msg = conn_ptr->GetInputStr();
 		std::cout<<msg<<std::endl;
 		// std::string output_str();
-		std::ostringstream os;
-		std::string content("{\"code\": 0, \"msg\": ok}");
-		os<<"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nDate: Wed, 16 May 2018 10:06:10 GMT\r\nContent-Length: "
-			<< content.length() 
-			<< "\r\n\r\n"
-			<<content;
-		conn_ptr->Send((const void*)os.str().c_str(), strlen(os.str().c_str()));
+		// std::ostringstream os;
+		// std::string content("{\"code\": 0, \"msg\": ok}");
+		// os<<"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nDate: Wed, 16 May 2018 10:06:10 GMT\r\nContent-Length: "
+		// 	<< content.length() 
+		// 	<< "\r\n\r\n"
+		// 	<<content;
+		AddStatusLine(500, error_500_title);
+		AddHeader(strlen(error_500_form));
+		AddContent(error_500_form);
+		conn_ptr->Send((const void*)m_http_response.c_str(), m_http_response.length());
 		conn_ptr->ClearInputBuff();
 	}
 
-	int HttpSession::ProcessRead()
+	void HttpSession::AddHeader(int content_len)
 	{
-		// LINE_STATUS line_status = LINE_OK;
-		// HTTP_CODE ret = NO_REQUEST;
-		// char* text = 0;
-		
-		// while(((m_check_state == CHECK_STATE_CONTENT) && line_status == LINE_OK) || ((line_status = parse_line()) == LINE_OK ))
-		// {
-		// 	text = get_line();
-		// 	m_start_line = m_checked_idx;
-		// 	printf("get 1 http line: %s\n", text);
+		AddContentLength(content_len);
+		AddLinger();
+		AddBlankLine();
+	}
 
-		// 	switch(m_check_state)
-		// 	{
-		// 		case CHECK_STATE_REQUESTLINE:
-		// 		{
-		// 			ret = parse_request_line(text);
-		// 			if(ret == BAD_REQUEST)
-		// 			{
-		// 				return BAD_REQUEST;
-		// 			}
-		// 			break;
-		// 		}
-		// 		case CHECK_STATE_HEADER:
-		// 		{
-		// 			ret = parse_headers(text);
-		// 			if(ret == BAD_REQUEST)
-		// 			{
-		// 				return BAD_REQUEST;
-		// 			}
-		// 			else if(ret == GET_REQUEST)
-		// 			{
-		// 				return do_request();
-		// 			}
-		// 			break;
-		// 		}
-		// 		case CHECK_STATE_CONTENT:
-		// 		{
-		// 			ret = parse_content(text);
-		// 			if(ret == GET_REQUEST)
-		// 			{
-		// 				ret = parse_content(text);
-		// 				if(ret == GET_REQUEST)
-		// 				{
-		// 					return do_request();
-		// 				}
-		// 				line_status =LINE_OPEN;
-		// 				break;
-		// 			}
-		// 		}
-		// 		default:
-		// 		{
-		// 			return INTERNAL_ERROR;
-		// 		}
-		// 	}
-		// }
-		return NO_REQUEST;
+	void HttpSession::AddContentLength(int content_len)
+	{
+		char content_line[128];
+		sprintf(content_line, "Content-Length: %d\r\n", content_len);
+		m_http_response.append(content_line);
+	}
+
+	void HttpSession::AddLinger()
+	{
+		m_http_response.append("Connection close\r\n");
+	}
+
+	void HttpSession::AddStatusLine(int status, const char* title)
+	{
+		char state_line[128];
+		sprintf(state_line, "HTTP/1.1, %d %s\r\n", status, title);
+		m_http_response.append(state_line);
+	}
+
+	void HttpSession::AddBlankLine()
+	{
+		m_http_response.append("\r\n");
+	}
+
+	void HttpSession::AddContent(const char* content)
+	{
+		m_http_response.append(content);
 	}
 }

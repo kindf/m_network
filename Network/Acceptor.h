@@ -22,7 +22,7 @@ namespace network
 
     public:
         Acceptor(EventLoop* loop, const InetAddress* listent_addr);
-        ~Acceptor(){};
+        ~Acceptor();
 
         bool Listen();
         void SetNewConnectionCallback(const NewConnectionCallback& cb){m_new_connection_callback = cb;}

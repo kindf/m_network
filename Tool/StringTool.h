@@ -14,7 +14,7 @@ private:
     StringTool& operator=(const StringTool& rhs) = delete;
     
 public:
-    static void split(const std::string& str, std::vector<std::string>& v, const char* delimiter = "|");
-}
+    static void Split(const std::string& str, std::vector<std::string>& v, const char* delimiter = "|");
+};
 
 #endif

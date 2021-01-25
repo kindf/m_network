@@ -1,6 +1,8 @@
 
-#include "Acceptor.h"
 #include <iostream>
+
+#include "Acceptor.h"
+#include "Sockets.h"
 
 namespace network
 {
@@ -14,6 +16,11 @@ namespace network
             m_accept_sock.BindOrDie(listent_addr);
             m_accept_channel.SetReadCallBack(std::bind(&Acceptor::HandleRead, this));
         }
+
+    Acceptor::~Acceptor()
+    {
+        Sockets::Close(m_accept_sock.GetFd());
+    }
 
     bool Acceptor::Listen()
     {

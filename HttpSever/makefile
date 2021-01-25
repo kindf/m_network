@@ -1,4 +1,4 @@
-OBJECTS = ./demo.cpp ./HttpServer.cpp ./HttpSession.cpp ../Network/*.cpp
+OBJECTS = ./demo.cpp ./HttpServer.cpp ./HttpSession.cpp ../Network/*.cpp ../Tool/StringTool.cpp
 CC = g++
 CPPFLAGS = -g -o 
 # LIBS = -I /usr/lib64/mysql -lmysqlclient -ljson-c

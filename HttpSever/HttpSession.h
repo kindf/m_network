@@ -50,6 +50,8 @@ namespace network
         void OnRead(const TcpConnectionPtr& conn_ptr);
 
     private:
+        HTTP_CODE ParseMsg(const std::string& msg);
+
         void AddHeader(int content_len);
         void AddContentLength(int content_len);
         void AddLinger();

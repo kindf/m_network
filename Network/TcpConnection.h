@@ -27,7 +27,7 @@ namespace network
 		void Send(const void* message, int len);
 		void Send(const std::string& message);
 
-		std::string GetInputStr()const{return m_input_buff;}
+		const std::string& GetInputStr()const{return m_input_buff;}
 		void ClearInputBuff(){m_input_buff.clear();}
 		
 		void ConnectEstablished();

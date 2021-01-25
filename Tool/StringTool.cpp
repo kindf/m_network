@@ -3,7 +3,7 @@
 
 #include "StringTool.h"
 
-void StringTool::split(const std::string& str, std::vector<std::string>& v, const char* delimiter/* = "|"*/)
+void StringTool::Split(const std::string& str, std::vector<std::string>& v, const char* delimiter/* = "|"*/)
 {
     if (delimiter == NULL || str.empty())
         return;

@@ -33,7 +33,8 @@ namespace network
 	void Sockets::BindOrDie(const InetAddress* addr)
 	{
 		int reuse = 1;
-		setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+		int opt_ret = setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+		std::cout<<"BindOrDie opt_ret:"<<opt_ret<<std::endl;
 		int ret = ::bind(m_sockfd, (sockaddr*)&addr->GetInetAddr(), sizeof(addr->GetInetAddr()));
 		assert(ret != -1);
 	}
@@ -77,6 +78,7 @@ namespace network
 		{
 			std::cout<<"Sockets::Close() error! fd="<<fd<<std::endl;
 		}
+		// std::cout<<"Sockets::Close()! fd="<<fd<<std::endl;
 	}
 
 	void Sockets::SetSocketNonBlock(int fd)

@@ -5,6 +5,7 @@
 
 #include "HttpSession.h"
 #include "../Network/TcpConnection.h"
+#include "../Tool/StringTool.h"
 
 using namespace network;
 
@@ -43,20 +44,47 @@ namespace network
 
 	void HttpSession::OnRead(const TcpConnectionPtr& conn_ptr)
 	{
-		std::string msg = conn_ptr->GetInputStr();
+		const std::string& msg = conn_ptr->GetInputStr();
 		std::cout<<msg<<std::endl;
-		// std::string output_str();
-		// std::ostringstream os;
-		// std::string content("{\"code\": 0, \"msg\": ok}");
-		// os<<"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nDate: Wed, 16 May 2018 10:06:10 GMT\r\nContent-Length: "
-		// 	<< content.length() 
-		// 	<< "\r\n\r\n"
-		// 	<<content;
-		AddStatusLine(500, error_500_title);
-		AddHeader(strlen(error_500_form));
-		AddContent(error_500_form);
-		conn_ptr->Send((const void*)m_http_response.c_str(), m_http_response.length());
-		conn_ptr->ClearInputBuff();
+		HTTP_CODE ret = ParseMsg(msg);
+		// AddStatusLine(500, error_500_title);
+		// AddHeader(strlen(error_500_form));
+		// AddContent(error_500_form);
+		// conn_ptr->Send((const void*)m_http_response.c_str(), m_http_response.length());
+		// conn_ptr->ClearInputBuff();
+	}
+
+	HttpSession::HTTP_CODE HttpSession::ParseMsg(const std::string& msg)
+	{
+		string end = msg.substr(msg.length() - 4);
+    	if (end != "\r\n\r\n")
+        {
+			return NO_REQUEST;
+		}
+		std::vector<string> lines;
+    	StringTool::Split(msg, lines, "\r\n");
+    	if (lines.empty() || lines[0].empty())
+    	{
+        	// conn->forceClose();
+        	return NO_REQUEST;
+    	}
+		std::vector<string> chunk;
+		StringTool::Split(lines[1], chunk, " ");
+		if (chunk.size() < 3)
+		{
+			// conn->forceClose();
+			return NO_REQUEST;
+		}
+
+		std::vector<string> part;
+		StringTool::Split(chunk[1], part, "?");
+		if (part.size() < 2)
+		{
+			// conn->forceClose();
+			return NO_REQUEST;
+		}
+		std::cout<<part[0]<<std::endl<<part[1]<<std::endl;
+		return GET_REQUEST;
 	}
 
 	void HttpSession::AddHeader(int content_len)

@@ -1,6 +1,7 @@
 
 #include <string.h>
 
+//#include "mysql/mysql.h"
 #include "MysqlConnection.h"
 
 MysqlConnection::MysqlConnection(const char *dbuser, const char *dbpw, const char *dbname, const char *dbhost, unsigned int dbport, const char* charset)
@@ -24,7 +25,7 @@ bool MysqlConnection::Connect()
 	m_mysql = mysql_init(0);
 	unsigned long client_flag = 0;
 	client_flag |= CLIENT_FOUND_ROWS;
-	if (0 == mysql_real_connect(m_mysql, m_host.c_str(), m_username.c_str(), m_pw.c_str(), m_database.c_str(), m_port.c_str(), 0, client_flag))
+	if (0 == mysql_real_connect(m_mysql, m_host.c_str(), m_username.c_str(), m_pw.c_str(), m_database.c_str(), m_port, 0, client_flag))
 	{
 		Close();
 		return false;

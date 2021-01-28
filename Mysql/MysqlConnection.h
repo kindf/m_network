@@ -3,6 +3,10 @@
 #define _MYSQL_CONNECTION_H
 
 #include <string>
+#include "mysql/mysql.h"
+
+using std::string;
+//typedef st_mysql MYSQL;
 
 class MysqlConnection
 {
@@ -12,23 +16,23 @@ public:
 
     bool Connect();
     bool ReConnect();
-    bool IsActive()
+    bool IsActive();
     bool Query(const char* sql);
 
     void Close();
     int GetErrno()const;
     const char* GetError()const;
 private:
-    MYSQL*      m_mysql;
+    MYSQL*              m_mysql;
 
-    string      m_username;
-    string      m_pw;
-    string      m_host;
-    string      m_port;
-    string      m_charset;
-    string      m_database;
+    string              m_username;
+    string              m_pw;
+    string              m_host;
+    unsigned int        m_port;
+    string              m_charset;
+    string              m_database;
 
-    bool        m_connected;
+    bool                m_connected;
 
 };
 

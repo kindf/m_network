@@ -6,6 +6,7 @@
 #include "mysql/mysql.h"
 
 using std::string;
+class MysqlResult;
 //typedef st_mysql MYSQL;
 
 class MysqlConnection
@@ -17,11 +18,20 @@ public:
     bool Connect();
     bool ReConnect();
     bool IsActive();
-    bool Query(const char* sql);
-
     void Close();
     int GetErrno()const;
     const char* GetError()const;
+
+
+    int Get();
+    int Insert();
+    int Update();
+    int Remove();
+    int Find();
+    
+private:
+    bool Query(const char* sql);
+
 private:
     MYSQL*              m_mysql;
 
@@ -33,7 +43,7 @@ private:
     string              m_database;
 
     bool                m_connected;
-
+    MysqlResult         m_result;
 };
 
 #endif

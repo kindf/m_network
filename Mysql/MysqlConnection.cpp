@@ -3,9 +3,10 @@
 
 //#include "mysql/mysql.h"
 #include "MysqlConnection.h"
+#include "MysqlResult.h"
 
 MysqlConnection::MysqlConnection(const char *dbuser, const char *dbpw, const char *dbname, const char *dbhost, unsigned int dbport, const char* charset)
-: m_username(dbuser), m_pw(dbpw), m_database(dbname), m_host(dbhost), m_port(dbport), m_charset(charset), m_connected(false), m_mysql(0)
+: m_mysql(0), m_username(dbuser), m_pw(dbpw), m_database(dbname), m_host(dbhost), m_port(dbport), m_charset(charset), m_connected(false), m_result()
 {
 
 }
@@ -50,6 +51,7 @@ bool MysqlConnection::Query(const char* sql)
 	{
 		return false;
 	}
+    m_result.Init(m_mysql);
     return true;
 }
 

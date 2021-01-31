@@ -6,7 +6,6 @@
 
 #include "Channel.h"
 #include "Callback.h"
-#include "Channel.h"
 
 using namespace network;
 

@@ -3,11 +3,11 @@
 #define _MYSQL_CONNECTION_H
 
 #include <string>
+
 #include "mysql/mysql.h"
+#include "MysqlResult.h"
 
 using std::string;
-class MysqlResult;
-//typedef st_mysql MYSQL;
 
 class MysqlConnection
 {
@@ -22,15 +22,17 @@ public:
     int GetErrno()const;
     const char* GetError()const;
 
+    bool Query(const char* sql);
 
-    int Get();
-    int Insert();
-    int Update();
-    int Remove();
-    int Find();
+    MysqlResult* GetResult();
+
+    // int Get();
+    // int Insert();
+    // int Update();
+    // int Remove();
+    // int Find();
     
 private:
-    bool Query(const char* sql);
 
 private:
     MYSQL*              m_mysql;

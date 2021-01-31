@@ -1,5 +1,6 @@
 
 #include "mysql/mysql.h"
+#include "MysqlDefine.h"
 
 int GetDataType(int nSqlType)
 {

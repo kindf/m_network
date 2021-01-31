@@ -1,9 +1,12 @@
 
+// g++ -o test demo.cpp MysqlConnection.cpp MysqlResult.cpp MysqlDefine.cpp -I /usr/lib64/mysql -lmysqlclient
+
 #include <string>
 #include <stdio.h>
 #include <iostream>
 
 #include "MysqlConnection.h"
+#include "MysqlResult.h"
 
 using std::string;
 
@@ -22,16 +25,17 @@ int main()
 		std::cout<<conn.GetError()<<std::endl;
 		return 0;
 	}
-
-	for(int i = 2; i < 10; ++i)
+	
+	if(!conn.Query("select * from test1"))
 	{
-		//string sql = "insert into test1 values (" + (char)('0'+i) + ", " + (char)('0'+i) + ");";
-		char sql[100];
-		sprintf(sql, "insert into test1 values (%d, %d)", i, i);
-		if(!conn.Query(sql))
-		{
-			std::cout<<conn.GetError()<<std::endl;
-		}
+		std::cout<<"Mysql Query false, msg:"<<conn.GetError()<<std::endl;
 	}
+	MysqlResult* result = conn.GetResult();
+	if(result == 0)
+	{
+		std::cout<<"result error"<<std::endl;
+		return 0;
+	}
+	result->Printf();
 	return 0;
 }

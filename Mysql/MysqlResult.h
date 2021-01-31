@@ -1,9 +1,10 @@
 
-#ifndef __MYSQL__RESULT__H
-#define __MYSQL__RETURL__H
+#ifndef _MYSQL_RESULT_H
+#define _MYSQL_RESULT_H
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include "mysql/mysql.h"
 
@@ -15,6 +16,10 @@ public:
     ~MysqlResult();
 
     bool Init(MYSQL* mysql);
+	void Reset();
+	bool NextRow();
+	
+	void Printf();
 
     struct TypeName
 	{
@@ -29,10 +34,11 @@ public:
 	};
 
 private:
-	MYSQL_RES*		                    m_reuslt;
+	MYSQL_RES*		                    m_result;
+	unsigned int	                    m_field_count;
     std::map<std::string, IndexType>    m_field_name_info;          // key:列名
 	std::vector<TypeName>		        m_field_index_info;                          
-	unsigned int	                    m_field_count;
+	std::vector<std::string>			m_row_data;			
 };
 
 

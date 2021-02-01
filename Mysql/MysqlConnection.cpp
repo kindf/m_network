@@ -3,8 +3,8 @@
 
 #include "MysqlConnection.h"
 
-MysqlConnection::MysqlConnection(const char *dbuser, const char *dbpw, const char *dbname, const char *dbhost, unsigned int dbport, const char* charset)
-: m_mysql(0), m_username(dbuser), m_pw(dbpw), m_database(dbname), m_host(dbhost), m_port(dbport), m_charset(charset), m_connected(false), m_result()
+MysqlConnection::MysqlConnection(const char *dbhost, unsigned int dbport, const char *dbpw, const char *dbname, const char *dbuser, const char* charset)
+: m_mysql(0), m_host(dbhost), m_port(dbport), m_pw(dbpw), m_database(dbname), m_username(dbuser), m_charset(charset), m_connected(false), m_result()
 {
 
 }

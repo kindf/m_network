@@ -12,7 +12,7 @@ using std::string;
 class MysqlConnection
 {
 public:
-    MysqlConnection(const char *dbuser, const char *dbpw, const char *dbname, const char *dbhost, unsigned int dbport, const char* charset);
+    MysqlConnection(const char *dbhost, unsigned int dbport, const char *dbpw, const char *dbname, const char *dbuser, const char* charset);
     ~MysqlConnection();
 
     bool Connect();
@@ -37,12 +37,12 @@ private:
 private:
     MYSQL*              m_mysql;
 
-    string              m_username;
-    string              m_pw;
     string              m_host;
     unsigned int        m_port;
-    string              m_charset;
+    string              m_pw;
     string              m_database;
+    string              m_username;
+    string              m_charset;
 
     bool                m_connected;
     MysqlResult         m_result;

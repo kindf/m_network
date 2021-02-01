@@ -2,7 +2,8 @@
 #include "MysqlConnectionPool.h"
 #include "MysqlConnection.h"
 
-MysqlConnectionPool::MysqlConnectionPool()
+MysqlConnectionPool::MysqlConnectionPool(const char *dbhost, unsigned int dbport, const char *dbpw, const char *dbname, const char *dbuser, const char* charset)
+: m_host(dbhost), m_port(dbport), m_pw(dbpw), m_database(dbname), m_username(dbuser), m_charset(charset), m_conn_pool()
 {
 
 }
@@ -16,7 +17,7 @@ void MysqlConnectionPool::Init(int num)
 {
     for(int i = 0; i < num; ++i)
     {
-        MysqlConnection* conn = new MysqlConnection();
+        MysqlConnection* conn = new MysqlConnection(m_host.c_str(), m_port, m_pw.c_str(), m_database.c_str(), m_username.c_str(), m_charset.c_str());
         if(conn->Connect())
         {
             m_conn_pool.push(conn);

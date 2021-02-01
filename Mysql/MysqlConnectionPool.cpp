@@ -2,8 +2,8 @@
 #include "MysqlConnectionPool.h"
 #include "MysqlConnection.h"
 
-MysqlConnectionPool::MysqlConnectionPool(const char *dbhost, unsigned int dbport, const char *dbpw, const char *dbname, const char *dbuser, const char* charset)
-: m_host(dbhost), m_port(dbport), m_pw(dbpw), m_database(dbname), m_username(dbuser), m_charset(charset), m_conn_pool()
+MysqlConnectionPool::MysqlConnectionPool(int init_num)
+: m_init_num(init_num) 
 {
 
 }
@@ -13,11 +13,11 @@ MysqlConnectionPool::~MysqlConnectionPool()
     Release();
 }
 
-void MysqlConnectionPool::Init(int num)
+void MysqlConnectionPool::Init(const char *dbhost, unsigned int dbport, const char *dbpw, const char *dbname, const char *dbuser, const char* charset)
 {
-    for(int i = 0; i < num; ++i)
+    for(int i = 0; i < m_init_num; ++i)
     {
-        MysqlConnection* conn = new MysqlConnection(m_host.c_str(), m_port, m_pw.c_str(), m_database.c_str(), m_username.c_str(), m_charset.c_str());
+        MysqlConnection* conn = new MysqlConnection(dbhost, dbport, dbpw, dbname,  dbuser, charset);
         if(conn->Connect())
         {
             m_conn_pool.push(conn);
@@ -34,26 +34,31 @@ void MysqlConnectionPool::Release()
 	}
 }
 
-void MysqlConnectionPool::ReturnConn()
+void MysqlConnectionPool::ReturnConn(MysqlConnection* conn)
 {
-    m_mutex.Lock();
+    m_mutex.lock();
 	m_conn_pool.push(conn);
-	m_mutex.Unlock();
+	m_mutex.unlock();
 }
 
 MysqlConnection* MysqlConnectionPool::GetConn()
 {
+    if(m_conn_pool.empty())
+    {
+        return 0;
+    }
     MysqlConnection* conn = 0;
     m_mutex.lock();
-    if (m_conn_pool.size() != 0)
-	{
-		conn = m_conn_pool.front();
-		m_conn_pool.pop();
-	}
+    conn = m_conn_pool.front();
+    m_conn_pool.pop();
     m_mutex.unlock();
+    if(conn == 0)
+    {
+        return 0;
+    }
     if (!conn->IsActive())
 	{
-		conn->Reconnect();
+		conn->ReConnect();
 		if (!conn->IsActive())
 		{
             return 0;

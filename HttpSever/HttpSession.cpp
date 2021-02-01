@@ -69,7 +69,7 @@ namespace network
         	return NO_REQUEST;
     	}
 		std::vector<string> chunk;
-		StringTool::Split(lines[1], chunk, " ");
+		StringTool::Split(lines[0], chunk, " ");
 		if (chunk.size() < 3)
 		{
 			// conn->forceClose();

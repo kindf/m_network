@@ -33,7 +33,7 @@ namespace network
             std::unique_ptr<TcpServer>                  m_server;
             std::list<std::shared_ptr<HttpSession>>     m_session_list;
             std::mutex                                  m_mutex;
-            std::unique_ptr<MysqlConnectionPool>        m_database;
+            // std::unique_ptr<MysqlConnectionPool>        m_database;
     };
 }
 

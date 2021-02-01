@@ -7,6 +7,7 @@
 
 #include "MysqlConnection.h"
 #include "MysqlResult.h"
+#include "MysqlConnectionPool.h"
 
 using std::string;
 
@@ -19,23 +20,26 @@ unsigned int port = 3306;
 
 int main()
 {
-	MysqlConnection conn(dbuser, dbpassword, dbname, dbaddress, port, chatset);
-	if(!conn.Connect())
+	MysqlConnectionPool conn_pool;
+	conn_pool.Init(dbaddress, port, dbpassword, dbname, dbuser, chatset);
+	MysqlConnection* conn = conn_pool.GetConn();
+	if(!conn)
 	{
-		std::cout<<conn.GetError()<<std::endl;
+		// std::cout<<conn.GetError()<<std::endl;
 		return 0;
 	}
 	
-	if(!conn.Query("select * from test1"))
+	if(!conn->Query("select * from test1"))
 	{
-		std::cout<<"Mysql Query false, msg:"<<conn.GetError()<<std::endl;
+		std::cout<<"Mysql Query false, msg:"<<conn->GetError()<<std::endl;
 	}
-	MysqlResult* result = conn.GetResult();
+	MysqlResult* result = conn->GetResult();
 	if(result == 0)
 	{
 		std::cout<<"result error"<<std::endl;
 		return 0;
 	}
 	result->Printf();
+	conn_pool.ReturnConn(conn);
 	return 0;
 }

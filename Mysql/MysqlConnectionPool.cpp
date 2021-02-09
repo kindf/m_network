@@ -13,6 +13,12 @@ MysqlConnectionPool::~MysqlConnectionPool()
     Release();
 }
 
+MysqlConnectionPool& MysqlConnectionPool::Instance()
+{
+    static MysqlConnectionPool pool;
+    return pool;
+}
+
 void MysqlConnectionPool::Init(const char *dbhost, unsigned int dbport, const char *dbpw, const char *dbname, const char *dbuser, const char* charset)
 {
     for(int i = 0; i < m_init_num; ++i)

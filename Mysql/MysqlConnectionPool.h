@@ -13,6 +13,7 @@ public:
     MysqlConnectionPool(int init_num = 4);
     ~MysqlConnectionPool();
 
+    static MysqlConnectionPool& Instance();
     void Init(const char *dbhost, unsigned int dbport, const char *dbpw, const char *dbname, const char *dbuser, const char* charset);
     void Release();
 

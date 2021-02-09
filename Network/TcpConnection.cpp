@@ -115,11 +115,12 @@ namespace network
             }
             else
             {
-                if(errno == EAGAIN)
+                if(errno == EAGAIN || errno = EINTR)
                 {
-                    break;
+                    continue;
                 }
                 // HandleError();
+                break;
             }
             
         };

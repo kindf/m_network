@@ -1,8 +1,6 @@
 
 #ifndef JSON_CONFIG_PARSE_H
 #define JSON_CONFIG_PARSE_H
-
-#include "servercommon/turnfightcommon/squads.h"
 /*
 	一个简单的json配置读取工具
 	适用于已知json格式读取的场景
